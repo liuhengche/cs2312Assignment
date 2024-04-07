@@ -1,4 +1,4 @@
-public class Day implements Cloneable{
+public class Day implements Cloneable, Comparable<Day>{
 	 
 	private int year;
 	private int month;
@@ -77,6 +77,13 @@ public class Day implements Cloneable{
 		if (this.getClass() != obj.getClass()) return false;
 		Day another = (Day) obj;
 		return year == another.year && month == another.month && day == another.day;
+	}
+
+	@Override
+	public int compareTo(Day another) {
+		if (year != another.year) return year - another.year;
+		if (month != another.month) return month - another.month;
+		return day - another.day;
 	}
 
 

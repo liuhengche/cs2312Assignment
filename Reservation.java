@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Reservation implements Comparable<Reservation>{
     private String guestName;
@@ -7,7 +9,7 @@ public class Reservation implements Comparable<Reservation>{
     private Day dateDine;
     private Day dateRequest;
     private int ticketCode;
-    private boolean status;
+    private RState status;
 
     public Reservation(String guestName, String phoneNumber, int totPersons, String sDateDine) {
         this.guestName = guestName;
@@ -16,25 +18,31 @@ public class Reservation implements Comparable<Reservation>{
         this.dateDine = new Day(sDateDine);
         this.dateRequest = SystemDate.getInstance().clone();
         this.ticketCode = BookingTicketController.takeTicket(this.dateDine);
-        this.status = false;
+        this.status = new RStatePending();
     }
 
 
     public static void list(ArrayList<Reservation> reservations) {
         
         //Learn: "-" means left-aligned
-        System.out.printf("%-13s%-11s%-14s%-12s%-12s%-10s%s\n", "Guest Name", "Phone", "Request Date", "Dining Date", "and Ticket", "#Persons", "Status");
+        System.out.printf("%-13s%-11s%-14s%-25s%-11s%s", "Guest Name", "Phone", "Request Date", "Dining Date and Ticket", "#Persons", "Status\n");
+        
+        Collections.sort(reservations, new Comparator<Reservation>() {
+            @Override
+            public int compare(Reservation r1, Reservation r2) {
+                int nameCompare = r1.guestName.compareTo(r2.guestName);
+                if (nameCompare != 0) return nameCompare;
+
+                int phoneCompare = r1.phoneNumber.compareTo(r2.phoneNumber);
+                if (phoneCompare != 0) return phoneCompare;
+
+                return r1.dateDine.compareTo(r2.dateDine);
+            }
+        });
+       
         for (Reservation r: reservations) {
-            String ticket = "(Ticket " + r.getTicketCode() + ")";
-            String status;
-            if (!r.status) {
-                status = "Pending";
-            }
-            else {
-                status = "Confirmed";
-            }
-            System.out.printf("%-13s%-11s%-14s%-12s%-12s%5d%s\n", 
-            r.guestName, r.phoneNumber, r.dateRequest, r.dateDine, ticket, r.totPersons);
+            System.out.printf("%-13s%-11s%-14s%-25s%4d       %s\n", 
+            r.guestName, r.phoneNumber, r.dateRequest, r.dateDine+String.format(" (Ticket %d)", r.ticketCode), r.totPersons, r.status);
         }
     }
 
@@ -62,8 +70,12 @@ public class Reservation implements Comparable<Reservation>{
         return dateDine;
     }
 
-    public void setStatus() {
-        status = true;
+    public int getTotPersons() {
+        return totPersons;
+    }
+
+    public void assignTable(ArrayList<Table> tables) {
+        status = new RStateTableAllocated(tables);
     }
 }
 

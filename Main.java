@@ -34,16 +34,28 @@ public class Main {
 			//split the words in actionLine => create an array of word strings
 			String[] cmdParts = cmdLine.split("\\|"); 
 			
+
+
+			// Error handling not done yet...
 			if (cmdParts[0].equals("request"))
 				(new CmdRequest()).execute(cmdParts);
 			if (cmdParts[0].equals("listReservations"))
 				(new CmdListReservations()).execute(cmdParts);
 			if (cmdParts[0].equals("startNewDay"))
 				(new CmdStartNewDay()).execute(cmdParts);
+			if (cmdParts[0].equals("assignTable"))
+				(new CmdAssignTable()).execute(cmdParts);
+			if (cmdParts[0].equals("cancel"))
+				(new CmdCancel()).execute(cmdParts);
+			if (cmdParts[0].equals("listTableAllocations"))
+				(new CmdListTableAllocations()).execute(cmdParts);
+			if (cmdParts[0].equals("suggestTable"))
+				(new CmdSuggestTable()).execute(cmdParts);
 			if (cmdParts[0].equals("undo"))
 				RecordedCommand.undoOneCommand();
 			if (cmdParts[0].equals("redo"))
 				RecordedCommand.redoOneCommand();
+			
 		}
 		inFile.close();
 			
