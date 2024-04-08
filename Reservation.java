@@ -77,5 +77,9 @@ public class Reservation implements Comparable<Reservation>{
     public void assignTable(ArrayList<Table> tables) {
         status = new RStateTableAllocated(tables);
     }
+
+    public boolean checkPending() {
+        return status instanceof RStatePending;
+    }
 }
 

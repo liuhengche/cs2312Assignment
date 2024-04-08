@@ -56,4 +56,6 @@ public class Table implements Comparable<Table>{
         reservations.remove(date);
         availability.put(date, true);
     }
+
+    
 }
