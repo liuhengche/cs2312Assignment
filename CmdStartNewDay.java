@@ -8,8 +8,6 @@ public class CmdStartNewDay extends RecordedCommand{
         if (SystemDate.getInstance() == null) {
             newDay = new Day(cmdParts[1]);
             SystemDate.createTheInstance(cmdParts[1]);
-            addUndoCommand(this);
-            clearRedoList();
         } else {
             newDay = new Day(cmdParts[1]);
             SystemDate.getInstance().set(cmdParts[1]);
