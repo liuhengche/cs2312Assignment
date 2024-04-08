@@ -12,9 +12,10 @@ public class BookingOffice {
     private BookingOffice() {
         allReservations = new ArrayList<Reservation>();
         allTables = new ArrayList<Table>();
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i < 10; i++) {
             allTables.add(new Table("T0" + i, 2));
         }
+        allTables.add(new Table("T10", 2));
         for (int i = 1; i <= 6; i++) {
             allTables.add(new Table("F0" + i, 4));
         }
@@ -137,7 +138,16 @@ public class BookingOffice {
         }
         if (count == 0) {
             System.out.println("[None]");
+            System.out.println();
         }
+        System.out.println("Available tables: ");
+        for (Table t: allTables) {
+            if (t.isAvailable(date)) {
+                System.out.print(t + " ");
+            }
+        }
+        System.out.println();
+        listPending(date);
     }
 
     public void cancelBooking(String date, int ticket) {
@@ -151,5 +161,16 @@ public class BookingOffice {
         }
     }
 
+    public void listPending(String date) {
+        int totalNumberofPendingRequests = 0;
+        int totalNumberofPendingSeats = 0;
+        for (Reservation r : allReservations) {
+            if (r.getDateDine().toString().equals(date) && r.checkPending()) {
+                totalNumberofPendingRequests++;
+                totalNumberofPendingSeats += r.getTotPersons();
+            }
+        }
+        System.out.printf("Total number of pending requests = %d (Total number of persons = %d)\n", totalNumberofPendingRequests, totalNumberofPendingSeats);
+    }
 }
 
