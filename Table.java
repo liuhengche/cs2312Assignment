@@ -57,5 +57,12 @@ public class Table implements Comparable<Table>{
         availability.put(date, true);
     }
 
+    public boolean alreadyAssignedToThis(String date, Reservation r) {
+        return reservations.containsKey(date) && reservations.get(date).equals(r);
+    }
+
+    public boolean ExTableAlreadyAssignedToAnother(String date, Reservation r) {
+        return reservations.containsKey(date) && !alreadyAssignedToThis(date, r);
+    }
     
 }

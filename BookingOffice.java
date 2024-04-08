@@ -26,7 +26,7 @@ public class BookingOffice {
 
     private void tableAvailabilityChange(Table t, String date, Boolean isAvailable) {
         //something
-        t.setAvailability(date, false);
+        t.setAvailability(date, isAvailable);
     } 
 
     public static BookingOffice getInstance() {
@@ -62,6 +62,15 @@ public class BookingOffice {
         return null;
     }
 
+    public boolean findReservationByPho(String pho, String date) {
+        for (Reservation r : allReservations) {
+            if (r.checkPho(pho) && r.getDateDine().toString().equals(date)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void assignTable(String date, int ticket, ArrayList<Table> tables) {
         //reservation status change, and table availability change
         Reservation r = findReservation(date, ticket);
@@ -69,6 +78,14 @@ public class BookingOffice {
         for (Table t : tables) {
             tableAvailabilityChange(t, date, false);
             t.assignReservation(date, r);
+        }
+    }
+
+    public void undoAssignTable(Reservation r, ArrayList<Table> tables) {
+        r.undoAssignTable();
+        for (Table t : tables) {
+            tableAvailabilityChange(t, r.getDateDine().toString(), true);
+            t.cancelBooking(r.getDateDine().toString());
         }
     }
 
@@ -150,12 +167,13 @@ public class BookingOffice {
         listPending(date);
     }
 
-    public void cancelBooking(String date, int ticket) {
+    public void cancelBooking(String date, int ticket, ArrayList<Table> tables) {
         //something
         Reservation r = findReservation(date, ticket);
         allReservations.remove(r);
         for (Table t: allTables) {
             if (!t.isAvailable(date)) {
+                tables.add(t);
                 t.cancelBooking(date);
             }
         }
@@ -171,6 +189,27 @@ public class BookingOffice {
             }
         }
         System.out.printf("Total number of pending requests = %d (Total number of persons = %d)\n", totalNumberofPendingRequests, totalNumberofPendingSeats);
+    }
+
+    public boolean checkValidDate (String date) {
+        Day d = new Day(date);
+        Day today = SystemDate.getInstance();
+        if (d.compareTo(today) >= 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public void undoCancelBooking(Reservation r, ArrayList<Table> tables) {
+        addReservation(r);
+        for (Table t : tables) {
+            t.setAvailability(r.getDateDine().toString(), false);
+            t.assignReservation(r.getDateDine().toString(), r);
+        }
+    }
+
+    public void changeRequestDate(Reservation r) {
+        r.changeRequestDate();
     }
 }
 

@@ -81,5 +81,24 @@ public class Reservation implements Comparable<Reservation>{
     public boolean checkPending() {
         return status instanceof RStatePending;
     }
+
+    public boolean checkPho(String pho) {
+        return phoneNumber.equals(pho);
+    }
+
+    public void undoAssignTable() {
+        status = new RStatePending();
+    }
+
+    public boolean checkEqual(String[] cmdParts) {
+        if (this.guestName.equals(cmdParts[1]) && this.phoneNumber.equals(cmdParts[2]) && this.totPersons == Integer.parseInt(cmdParts[3]) && this.dateDine.toString().equals(cmdParts[4])){
+            return true;
+        }
+        return false;
+    }
+
+    public void changeRequestDate() {
+        dateRequest = SystemDate.getInstance().clone();
+    }
 }
 

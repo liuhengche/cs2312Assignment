@@ -14,7 +14,7 @@ public class SystemDate extends Day{
             instance = new SystemDate(sDay);
         }
         else {
-            System.out.println("Cannot create one more system date instance.");
+            //System.out.println("Cannot create one more system date instance.");
         }
     }
 
