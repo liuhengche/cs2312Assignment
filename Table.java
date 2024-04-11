@@ -65,4 +65,7 @@ public class Table implements Comparable<Table>{
         return reservations.containsKey(date) && !alreadyAssignedToThis(date, r);
     }
     
+    public boolean assignedTableForThisReservation(String date, Reservation r) {
+        return reservations.containsKey(date) && reservations.get(date).equals(r);
+    }
 }

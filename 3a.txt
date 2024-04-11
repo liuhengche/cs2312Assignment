@@ -9,9 +9,13 @@ listReservations
 listTableAllocations|24-Mar-2024
 
 request|BLACK, Mr|93330000|10|24-Mar-2024
+listTableAllocations|24-Mar-2024
 assignTable|24-Mar-2024|3|F01|F05|T02
+listTableAllocations|24-Mar-2024
 cancel|24-Mar-2024|1
+listTableAllocations|24-Mar-2024
 assignTable|24-Mar-2024|3|F01|F05|T02
+listTableAllocations|24-Mar-2024
 listReservations
 listTableAllocations|24-Mar-2024
 

@@ -24,6 +24,8 @@ public class CmdSuggestTable implements Command{
             System.out.println(e.getMessage());
         } catch (ExTableAlreadyAssignedToThis e) {
             System.out.println(e.getMessage());
+        } catch (ExNotEnoughTableForSuggestion e) {
+            System.out.println(e.getMessage());
         }
     }
 }

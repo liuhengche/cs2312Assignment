@@ -1,0 +1,11 @@
+startNewDay|17-Mar-2024
+
+request|CHAN, Ms|90123456|40|20-Mar-2024
+request|TANG, Ms|90121212|3|20-Mar-2024
+
+listReservations
+
+assignTable|20-Mar-2024|1|H01|H02|F01|F02|F03|F04|F05|F06
+listTableAllocations|20-Mar-2024
+
+suggestTable|20-Mar-2024|2

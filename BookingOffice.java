@@ -25,7 +25,6 @@ public class BookingOffice {
     }
 
     private void tableAvailabilityChange(Table t, String date, Boolean isAvailable) {
-        //something
         t.setAvailability(date, isAvailable);
     } 
 
@@ -98,15 +97,25 @@ public class BookingOffice {
         return null;
     }
 
-    public void suggestTable(String date, int ticket) {
+    public void suggestTable(String date, int ticket) throws ExNotEnoughTableForSuggestion{
         //something
         Reservation r = findReservation(date, ticket);
         int totalSeatsNeeded = r.getTotPersons();
         ArrayList<Table> availableTables = new ArrayList<Table>();
         ArrayList<Table> suggestedTables = new ArrayList<Table>();
+        int TableForTwo = 0;
+        int TableForFour = 0;
+        int TableForEight = 0;
         for (Table t: allTables) {
             if (t.isAvailable(date)) {
                 availableTables.add(t);
+                if (t.getCapacity() == 2) {
+                    TableForTwo++;
+                } else if (t.getCapacity() == 4) {
+                    TableForFour++;
+                } else {
+                    TableForEight++;
+                }
             }
         }
         Collections.sort(availableTables, new Comparator<Table>() {
@@ -116,7 +125,7 @@ public class BookingOffice {
         });
 
         for (Table t : availableTables) {
-            if (t.getCapacity() <= totalSeatsNeeded) {
+            if (t.getCapacity() <= totalSeatsNeeded || t.getCapacity()-totalSeatsNeeded == 1){
                 suggestedTables.add(t);
                 totalSeatsNeeded -= t.getCapacity();
                 if (totalSeatsNeeded <= 0) {
@@ -135,8 +144,51 @@ public class BookingOffice {
                     }
                 }
             }
+            if (totalSeatsNeeded == 1) {
+                for (Table t: availableTables) {
+                    if (!suggestedTables.contains(t) && t.getCapacity() == 2) {
+                        suggestedTables.add(t);
+                        break;
+                    } 
+                }
+            }
         }
+            
         System.out.printf("Suggestion for %d persons: ", r.getTotPersons());
+    
+        if ((availableTables.size() == suggestedTables.size()) && (totalSeatsNeeded > 0)) {
+            //throw not enough tables
+            throw new ExNotEnoughTableForSuggestion();
+        }
+        
+        if (totalSeatsNeeded > 0) {
+            for (Table t: suggestedTables) {
+                totalSeatsNeeded += t.getCapacity();
+            }
+            ArrayList<Table> newSuggestedTables = new ArrayList<Table>();
+            int idealTableSize = 8;
+            if (8 >= totalSeatsNeeded && TableForEight > 0) {
+                idealTableSize = 8;
+            }
+            if (4 >= totalSeatsNeeded && TableForFour > 0) {
+                idealTableSize = 4;
+            }
+            if (2 >= totalSeatsNeeded && TableForTwo > 0) {
+                idealTableSize = 2;
+            }
+
+            for (Table t: availableTables) {
+                if (t.getCapacity() == idealTableSize) {
+                    newSuggestedTables.add(t);
+                    totalSeatsNeeded -= t.getCapacity();
+                    if (totalSeatsNeeded <= 0) {
+                        break;
+                    }
+                }
+            }
+            suggestedTables = newSuggestedTables;
+
+        }
         for (Table t : suggestedTables) {
             System.out.print(t + " ");
         }
@@ -172,7 +224,7 @@ public class BookingOffice {
         Reservation r = findReservation(date, ticket);
         allReservations.remove(r);
         for (Table t: allTables) {
-            if (!t.isAvailable(date)) {
+            if (t.assignedTableForThisReservation(date, r)) {
                 tables.add(t);
                 t.cancelBooking(date);
             }
@@ -211,5 +263,67 @@ public class BookingOffice {
     public void changeRequestDate(Reservation r) {
         r.changeRequestDate();
     }
+
+
+
 }
 
+/*
+     public void suggestTable(String date, int ticket) throws ExNotEnoughTableForSuggestion{
+        //something
+        Reservation r = findReservation(date, ticket);
+        int totalSeatsNeeded = r.getTotPersons();
+        ArrayList<Table> availableTables = new ArrayList<Table>();
+        ArrayList<Table> suggestedTables = new ArrayList<Table>();
+        for (Table t: allTables) {
+            if (t.isAvailable(date)) {
+                availableTables.add(t);
+            }
+        }
+        Collections.sort(availableTables, new Comparator<Table>() {
+            public int compare(Table t1, Table t2) {
+                return t2.getCapacity() - t1.getCapacity(); // Note the order for descending sort
+            }
+        });
+
+        for (Table t : availableTables) {
+            if (t.getCapacity() <= totalSeatsNeeded || t.getCapacity()-totalSeatsNeeded == 1){
+                suggestedTables.add(t);
+                totalSeatsNeeded -= t.getCapacity();
+                if (totalSeatsNeeded <= 0) {
+                    break; // Found enough seats
+                }
+            }
+        }
+         // If more seats are needed, make up with smaller tables
+         if (totalSeatsNeeded > 0) {
+            for (Table t : availableTables) {
+                if (!suggestedTables.contains(t) && t.getCapacity() <= totalSeatsNeeded) {
+                    suggestedTables.add(t);
+                    totalSeatsNeeded -= t.getCapacity();
+                    if (totalSeatsNeeded <= 0) {
+                        break; // Found enough seats
+                    }
+                }
+            }
+            if (totalSeatsNeeded == 1) {
+                for (Table t: availableTables) {
+                    if (!suggestedTables.contains(t) && t.getCapacity() == 2) {
+                        suggestedTables.add(t);
+                        break;
+                    } 
+                }
+            }
+        }
+        System.out.printf("Suggestion for %d persons: ", r.getTotPersons());
+        if ((availableTables.size() == suggestedTables.size()) && (totalSeatsNeeded > 0)) {
+            //throw not enough tables
+            throw new ExNotEnoughTableForSuggestion();
+        }
+        for (Table t : suggestedTables) {
+            System.out.print(t + " ");
+        }
+        System.out.println();
+    
+    }
+ */

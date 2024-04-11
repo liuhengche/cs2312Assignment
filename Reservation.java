@@ -100,5 +100,9 @@ public class Reservation implements Comparable<Reservation>{
     public void changeRequestDate() {
         dateRequest = SystemDate.getInstance().clone();
     }
+
+    public boolean equals(Reservation r) {
+        return this.guestName.equals(r.guestName) && this.phoneNumber.equals(r.phoneNumber) && this.totPersons == r.totPersons && this.dateDine.equals(r.dateDine)&& this.ticketCode == r.ticketCode&&this.dateRequest.equals(r.dateRequest);
+    }
 }
 
