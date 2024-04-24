@@ -61,8 +61,28 @@ public class Main {
 				}
 			} catch (ExUnknownCommand e)  {
 				System.out.println(e.getMessage());
+			} catch (ExInsufficientCommand e) {
+				System.out.println(e.getMessage());
+			} catch (NumberFormatException e) {
+				ExWrongNumberFormat ex = new ExWrongNumberFormat();
+				System.out.println(ex.getMessage());
+			} catch (ExBookingNotFound e) {
+				System.out.println(e.getMessage());
+			} catch (ExTableAlreadyAssignedToThis e) {
+				System.out.println(e.getMessage());
+			} catch (ExNotEnoughTableForSuggestion e) {
+				System.out.println(e.getMessage());
+			} catch (ExDayAlreadyPassed e) {
+				System.out.println(e.getMessage());
+			} catch (ExTableCodeNotFound e) {
+				System.out.println(e.getMessage());
+			} catch (ExNotEnoughSeats e) {
+				System.out.println(e.getMessage());
+			} catch(ExTableAlreadyAssignedToAnother e) {
+				System.out.println(e.getMessage());
+			} catch (ExBookingAlreadyExists e) {
+				System.out.println(e.getMessage());
 			}
-			
 		}
 		inFile.close();
 			
